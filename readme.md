@@ -1,5 +1,7 @@
 
-This nginx config limits requests per second for any user-agent and/or IP that match a list of user-agents, I adapted it from [ai-bots-crawlers](https://github.com/kurren/ai-bots-crawlers) but instead of blocking, I'm rate limiting to 5 requests per minute.
+This nginx config limits requests to 5 per minute for any user-agent and/or IP that match a list of user-agents, and optionally blocks certain ones entirely.
+
+The user-agents came from the 3 sources linked in robots.txt and a few from my web server logs.
 
 To use:
 ```sh
@@ -15,3 +17,15 @@ http {
     # leave all the rest of the lines alone
 }
 ```
+
+(optional, if you want to hard-block certain UA's) put this in all your server { } blocks:
+
+```
+server {
+    include /etc/nginx/nginx-limit-crawlers/block-crawler.conf;
+    
+    # leave all the rest of the lines alone
+}
+```
+
+If you want to change robots.txt to add/remove some, run robots2nginx.sh to spit out some map directives to paste into limit-crawler.conf
